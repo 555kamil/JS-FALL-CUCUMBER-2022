@@ -1,10 +1,12 @@
 const Commands = require('../Commands');
+const Dates = require('../Dates');
 const moment = require("moment/moment");
 
 class HomePage {
 
     commands = new Commands();
     now = moment();
+    dates = new Dates();
 
     // Locators for web-Elements on the HomePage (variables)
     // Destination
@@ -23,7 +25,7 @@ class HomePage {
     prevCalendarButtonLocator = '(//button[@data-stid="date-picker-paging"])[1]';
     leftSideCalendarHeaderLocator = '(//div[@class="uitk-date-picker-month"])[1]//h2';
 
-    // Sprint #1 Locators
+    // Sprint #1 and #2 Locators
     englishLanguageLocator = '//div[text()="English"]';
     spanishLanguageLocator = '//div[text()="Español"]';
     languageDropdown = '//select[@id="language-selector"]';
@@ -49,6 +51,10 @@ class HomePage {
     submitButton = '//*[@id="submit-button"]';
     feedbackError = '//p[text()="Please fill in the required information highlighted below."]';
     errorRedDots = '//fieldset[contains(@style, "padding")]';
+    signUp = '//a[contains(@data-stid, "account-signup")]'
+    termsAndConditionsLink ='//a[text()="Terms and Conditions"]'
+    lastRevisedLocator = '//div[contains(@class, "blockstart-three")]//span[contains(text() , "Last revised")]'
+    lastUpdated = '//p[contains(text() , "Last Updated")]'
 
     starRate_1 = '//label[@for="page-rating-1"]';
     starRate_2 = '//label[@for="page-rating-2"]';
@@ -66,6 +72,324 @@ class HomePage {
     currentMonth = '//div[@class="uitk-date-picker-month"]//h2[text()="' + this.now.format('MMMM YYYY') + '"]';
     currentDisplayedMonthLocator = '//div[@class="uitk-date-picker-month"][1]//h2';
     previousPage = '//*[@id="prevMonth-title"]';
+
+    signInButton1Locator = '//a[@data-stid="link-header-account-signin"]'
+    signInEmailAddressLocator = '//input[@id="loginFormEmailInput"]'
+    signInPasswordLocator = '//input[@type="password"]'
+    signInButton2Locator = '//button[@id="loginFormSubmitButton"]'
+    signInErrMsgLocator = '//h3[@class="uitk-error-summary-heading"]'
+    
+    signupEmailAddressLocator = '//input[@id="signupFormEmailInput"]'
+    signupFirstNameLocator = '//input[@id="signupFormFirstNameInput"]'
+    signUpLastNameLocator = '//input[@id="signupFormLastNameInput"]'
+    signUpPwdLocator = '//input[@id="signupFormPasswordInput"]'
+
+    emailAddressError = '//div[@id="signupFormEmailInput-error"]';
+    firstNameError = '//div[@id="signupFormFirstNameInput-error"]';
+    lastNameError = '//div[@id="signupFormLastNameInput-error"]';
+    keepMeSignedIn = '//span[contains(text(),"Keep me signed in")]';
+    continueButton = '//button[@id="signupFormSubmitButton"]';
+    continueButtonDisabled = '//button[@disabled]';
+
+    calendarOpenLocator = '#date_form_field-btn'
+    searchButtonLocator = '//button[@id="search_button"]'
+    oneStarLocator = '//label[@aria-label="1 star"]'
+    twoStarLocator= '//label[@aria-label="2 star"]'
+    threeStarLocator='//label[@aria-label="3 star"]'
+    fourStarLocator= '//label[@aria-label="4 star"]'
+    fiveStarLocator= '//label[@aria-label="5 star"]'
+
+    starRatingField = '//div[@class="uitk-rating"]'
+    allPricesForManhattan = '//div[contains(@class , "padding-block-half")]'
+    childrenDropDown = '//select[contains(@id, "children_age_selector")]'
+    increaseChildCountLocator = '//*[@aria-label="Increase the number of children in room 1"]'
+    decreaseChildCountLocator= '//*[@aria-label="Decrease the number of children in room 1"]'
+
+    errorPassMsgIncludes ='//ul[contains(@class, "uitk-typelist")]//li[contains(@class, "typelist-item")][1]'
+    errorPassCombines = '//ul[contains(@class, "uitk-typelist")]//li[contains(@class, "typelist-item")][2]'
+    errorPassAddMore = '//ul[contains(@class, "uitk-typelist")]//li[contains(@class, "typelist-item")][1]'
+    errorPassAvoid = '//ul[contains(@class, "uitk-typelist")]//li[contains(@class, "typelist-item")][2]'
+    passwordStrength = '//div[contains(@class, "progress-bar-description")]'
+    passwordBarStrength ='//div[contains(@class, "bar-current")]'
+
+    strength_zero = '//div[@style="width: 0%;"]';
+    strength_half = '//div[@style="width: 50%;"]';
+    strength_75 = '//div[@style="width: 75%;"]';
+    strength_full = '//div[@style="width: 100%;"]';
+    strengthMsg_Weak = '//div[contains(text(),"Weak")]';
+    strengthMsg_Strong = '//div[contains(text(),"Strong")]';
+    strengthMsg_VeryStrong = '//div[contains(text(),"Very Strong")]';
+
+
+
+// TC-20
+
+async clickOnSignUp() {
+    await this.commands.clickWebElement(this.signUp);
+ } 
+
+ async clickOnTermsLink() {
+    await this.commands.clickWebElement(this.termsAndConditionsLink)
+ }
+
+ async switchToNewWindowHandle() {
+    const windowHandle = await this.commands.getHandle()
+    const allWindowHandles = await this.commands.getHandles()
+    for(const handle of allWindowHandles){
+        if(handle!== windowHandle){
+            await this.commands.switchToWindowHandle(handle)
+            break;
+        }};
+}
+
+async verifyTosDateFormat() { 
+    const getDisplayedDate = await this.commands.getTextOfWebElement(this.lastRevisedLocator)
+    const displayedDate = getDisplayedDate.substring(14);
+    const expectedDate = await this.dates.getFormat_MM_DD_YY(displayedDate);
+    return displayedDate.localeCompare(expectedDate)===0;
+}
+
+async verifyPrivacyDateFormat() { 
+    const getDisplayedDate = await this.commands.getTextOfWebElement(this.lastUpdated);
+    const displayedDate = getDisplayedDate.substring(14);
+    const expectedDate = await this.dates.getFormat_DD_MMMM_YYYY(displayedDate);
+    return displayedDate.localeCompare(expectedDate)===0;
+}
+
+
+//@TC-21
+
+async clickSignInButton1() {
+    await this.commands.clickWebElement(this.signInButton1Locator);
+}
+
+async enterSignInEmail(email) {
+    await this.commands.typeInWebElement(this.signInEmailAddressLocator, email);
+}
+
+async enterSignInPassword(pwd) {
+    await this.commands.typeInWebElement(this.signInPasswordLocator, pwd)
+}
+
+async clickSignInButton2() {
+    await this.commands.clickWebElement(this.signInButton2Locator);
+}
+
+async isSignInErrorMsgDisplayed() {
+    return await this.commands.isWebElementDisplayed(this.signInErrMsgLocator)
+}
+
+//@TC-22
+
+async enterSignupEmail(email) {
+    await this.commands.typeInWebElement(this.signupEmailAddressLocator, email)
+}
+
+async enterSignUpFirstName(firstName) {
+    await this.commands.typeInWebElement(this.signupFirstNameLocator, firstName)
+}
+
+async enterSignUpLastName(lastName) {
+    await this.commands.typeInWebElement(this.signUpLastNameLocator, lastName)
+}
+
+async enterSignUpPwd(pwd) {
+    await this.commands.typeInWebElement(this.signUpPwdLocator, pwd)
+}
+
+async verifyErrorDisplayed(webElement){
+    switch (webElement) {
+        case "Enter a valid email":
+        return await this.commands.isWebElementDisplayed(this.emailAddressError)
+        break;
+        case "First name cannot contain special characters":
+        return await this.commands.isWebElementDisplayed(this.firstNameError)
+        break;
+        case "Last name cannot contain special characters":
+        return await this.commands.isWebElementDisplayed(this.lastNameError)
+        break;
+        case "Keep me signed in":
+        return await this.commands.isWebElementDisplayed(this.keepMeSignedIn)
+        break;
+        case "Continue button":
+        return await this.commands.isWebElementDisplayed(this.continueButton)
+        break;
+        default:
+            break;
+    }
+}
+
+async verifyElementEnabled(webElement) {
+    switch (webElement) {
+        case "Keep me signed in":
+        return await this.commands.isWebElementEnabled(this.keepMeSignedIn)
+        break;
+        case "Continue button":
+        return await this.commands.isWebElementEnabled(this.continueButton)
+        break;
+        default:
+        break;
+    }
+}
+
+async continueNotEnabled(){
+    return this.commands.isWebElementEnabled(this.continueButtonDisabled);
+}
+
+//TC-23
+
+async openCalendar() {
+    await this.commands.clickWebElement(this.calendarOpenLocator);
+}
+
+async clickSearchButton() {
+    await this.commands.clickWebElement(this.searchButtonLocator);
+}
+
+async selectRating(star){
+    switch (star) {
+        case '1':
+            await this.commands.clickWebElement(this.oneStarLocator);
+            break;
+        case '2':
+            await this.commands.clickWebElement(this.twoStarLocator);
+            break;
+        case '3':
+            await this.commands.clickWebElement(this.threeStarLocator);
+            break;  
+        case '4':
+            await this.commands.clickWebElement(this.fourStarLocator);
+            break;   
+        case '5':
+            await this.commands.clickWebElement(this.fiveStarLocator);
+            break;            
+        default:
+            break;
+ }
+}
+
+async getNumberFromStarRating(){
+    const starElements =  await this.commands.findAllWebElement(this.starRatingField)
+    await browser.pause(7000);
+    const ratingNumber =[];
+    for(const starElement of starElements){
+        let temp = await this.commands.getTextOfWebElement(starElement);
+        ratingNumber.push(Number(temp.charAt(0)));
+    }
+    return ratingNumber;
+}
+
+async isRatingSameStar() {
+    const allRates = await this.getNumberFromStarRating();
+    const firstNum = allRates[0];
+    return firstNum;
+}
+
+async getAllSearchResultsPricesInNumbers(){
+    const priceElements = await this.commands.findAllWebElement(this.allPricesForManhattan);
+    await browser.pause(7000);
+    const getNumberOfPrices = [];
+
+    for(const priceElement of priceElements){
+       let temp = await this.commands.getTextOfWebElement(priceElement);
+       getNumberOfPrices.push(Number(temp.substring(19)))
+    }
+    return getNumberOfPrices;
+   }
+
+
+   async isPricesInIncreasingOrder(data) {
+    let isArrayInExpectedOrder = true;
+    for (let i=0 ; i < data.length ; i++) {
+        if (pricesArray[i] > pricesArray[i+1]) {
+            isArrayInExpectedOrder = false;
+            break;
+        }
+    }
+    return isArrayInExpectedOrder;
+}
+
+//TC-28
+
+async numberOfKidsDropdown() {
+    const elementsArray = await this.commands.findAllWebElement(this.childrenDropDown)
+    return elementsArray.length.toString();
+}
+
+async isPlusButtonEnabledChild() {
+    const enabledElement = await this.commands.isWebElementEnabled(this.increaseChildCountLocator)
+    return enabledElement;
+ }
+
+
+async isMinusButtonEnabledChild() {
+        const enabledElement= await this.commands.isWebElementEnabled(this.decreaseChildCountLocator)
+        return enabledElement;
+    }
+
+//TC-32 TC-33
+
+async isIncludesErrorMsgDisplayed(){
+    return await this.commands.isWebElementDisplayed(this.errorPassMsgIncludes)
+}
+
+async isAddMoreErrorMsgDisplayed(){
+    return await this.commands.isWebElementDisplayed(this.errorPassAddMore)
+}
+
+async isCombinesErrorMsgDisplayed(){
+    return await this.commands.isWebElementDisplayed(this.errorPassCombines)
+}
+
+async isAvoidErrorMsgDisplayed(){
+    return await this.commands.isWebElementDisplayed(this.errorPassAvoid)
+}
+
+async filledPasswordBar(attribute) {
+    switch (attribute) {
+        case 'empty':
+        return await this.commands.isWebElementDisplayed(this.strength_zero);
+        break;
+        case 'half filled':
+        return await this.commands.isWebElementDisplayed(this.strength_half);
+        break;
+        case 'three quarters filled':
+        return await this.commands.isWebElementDisplayed(this.strength_75);
+        break;
+        case 'full':
+        return await this.commands.isWebElementDisplayed(this.strength_full);
+        break;
+      default:
+        break;
+    }
+  }
+
+  async checkStrengthOfPassMsg(attribute) {
+    switch (attribute) {
+        case 'Weak':
+        return await this.commands.isWebElementDisplayed(this.strengthMsg_Weak);
+        break;
+        case 'Strong':
+        return await this.commands.isWebElementDisplayed(this.strengthMsg_Strong);
+        break;
+        case 'Very Strong':
+        return await this.commands.isWebElementDisplayed(this.strengthMsg_VeryStrong);
+        break;
+        default:
+        break;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+//************************* SPRINT-1 TICKETS********************************/
 
 //TC-17
 async checkCurrentMonthDisplayed() {
@@ -125,12 +449,14 @@ async clickDoneInTravelers() {
     await this.commands.clickWebElement(this.doneButton);
 }
 
-async totalTravelersSum() {
+async totalTravelersSum(numberAdults, numberChildren) {
     const totalDisplayedTravelers = await this.commands.getTextOfWebElement(this.travelersLocator);
-    const numberOfDisplayedTravelers = await Number(totalDisplayedTravelers.split(' ')[0]);
-    return numberOfDisplayedTravelers === numberAdults + numberChildren
-}
 
+    const tempSplit = await totalDisplayedTravelers.split(' ')[0];
+    const numberOfDisplayedTravelers = await Number(tempSplit.substring(10,12));
+
+    return numberOfDisplayedTravelers === Number(numberAdults)+Number(numberChildren);
+}
 
 
 //TC-24
@@ -168,24 +494,24 @@ async isRedDotsBoxDisplayed() {
 //TC-25
 async chooseRating (stars) {
     switch (stars) {
-        case '1 star':
-            await this.commands.clickElement(this.starRate_1);
+        case '1-star':
+            await this.commands.clickWebElement(this.starRate_1);
             break;
 
-        case '2 stars':
-            await this.commands.clickElement(this.starRate_2);
+        case '2-star':
+            await this.commands.clickWebElement(this.starRate_2);
             break;
 
-        case '3 stars':
-            await this.commands.clickElement(this.starRate_3);
+        case '3-star':
+            await this.commands.clickWebElement(this.starRate_3);
             break;
 
-        case '4 stars':
-            await this.commands.clickElement(this.starRate_4);
+        case '4-star':
+            await this.commands.clickWebElement(this.starRate_4);
             break;
 
-        case '5 stars':
-            await this.commands.clickElement(this.starRate_5);
+        case '5-star':
+            await this.commands.clickWebElement(this.starRate_5);
             break;
 
         default:
@@ -290,8 +616,8 @@ async isEnglishLanguageDisplayed() {
 
 
 
-//*******************************************************************/
     // functions to interact with the web-Elements on the HomePage
+
     async enterDestination(destination) {
         await this.commands.clickWebElement(this.goingToLocator);
         await this.commands.typeInWebElement(this.goingToTypeLocator, destination);
