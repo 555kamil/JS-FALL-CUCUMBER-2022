@@ -90,11 +90,11 @@ And  I verify Password strength message is <strengthMsg>
 
 @TC-33
 Scenario: Verify weak password messages
-When I click Sign in button
-And  I click Sign up button  
-And  I enter 'user@test.com' in Email address
-And  I enter 'fUser' in First name
-And  I enter 'lUser' in Last name
+When I click on Sign In
+And  I click Sign Up link
+And  I enter 'qwerty' as invalid email address
+And  I enter '@@##$$' as invalid first name
+And  I enter '^&*%' as invalid last name
 And  I enter '<passw>' in Password
 Then I verify '<msg1>' is displayed
 And  I verify '<msg2>' message two is displayed

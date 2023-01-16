@@ -120,6 +120,10 @@ class HomePage {
     strengthMsg_Strong = '//div[contains(text(),"Strong")]';
     strengthMsg_VeryStrong = '//div[contains(text(),"Very Strong")]';
 
+    msg11Locator = '//ul[contains(@class, "uitk-typelist")]//li[contains(@class, "typelist-item")][1]'
+    msg12Locator = '//li[contains(text() , "Add more words")]'
+    msg21Locator = '//ul[contains(@class, "uitk-typelist")]//li[contains(@class, "typelist-item")][2]'
+    msg22Locator = '//li[contains(text() , "Avoid common")]'
 
 
 // TC-20
@@ -380,6 +384,13 @@ async filledPasswordBar(attribute) {
     }
   }
 
+async isMsg1Displayed() {
+    return await this.commands.isWebElementDisplayed(this.msg11Locator||this.msg12Locator)
+}
+
+async isMsg2Displayed() {
+    return await this.commands.isWebElementDisplayed(this.msg21Locator||this.msg22Locator)
+}
 
 
 

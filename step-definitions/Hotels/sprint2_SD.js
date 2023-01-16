@@ -200,6 +200,11 @@ When(/^I enter '(.+)' in Password$/, async function (password) {
     await browser.pause(2000);
 })
  
+When(/^I enter '(.+)' in Password$/, async function (passw) {
+    await homePage.enterSignUpPwd(passw);
+    await browser.pause(2000);
+})
+
 Then(/^I verify '(.+)' is displayed$/,async function() {
      expect(await homePage.isIncludesErrorMsgDisplayed(),'Not displayed').to.be.true;
      expect(await homePage.isAddMoreErrorMsgDisplayed(),'Not displayed ').to.be.true;
@@ -224,3 +229,11 @@ Then(/^I verify (.+) is (.+)$/,async function (webElement, attribute) {
         break;
     }}
 );  
+
+When(/^I verify (.+) message is displayed$/, async function (msg1) {
+    expect(await homePage.isMsg1Displayed(msg1), 'not displayed').to.be.true;
+})
+
+When(/^I verify (.+) message 2 is displayed$/, async function (msg2) {
+    expect(await homePage.isMsg2Displayed(msg2), 'not displayed').to.be.true;
+})
